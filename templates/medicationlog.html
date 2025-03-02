@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Medication Injection Log</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/home">Home</a>
+        <a href="/calorie">Calorie Intake</a>
+        <a href="/profile">Profile</a>
+        <a href="/tool">Tracking Tools</a>
+        <a href="/search">Search Users</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/logout">Logout</a>
+    </nav>
+
+    <div class="container">
+        <h1>Medication Injection Log</h1>
+
+        {% if medications %}
+            <table>
+                <tr>
+                    <th>Medication Name</th>
+                    <th>Frequency</th>
+                    <th>Injection Area</th>
+                    <th>Dose</th>
+                    <th>Log Date & Time</th>
+                </tr>
+                {% for med in medications %}
+                <tr>
+                    <td>{{ med.medication_name }}</td>
+                    <td>{{ med.injection_frequency }}</td>
+                    <td>{{ med.injection_area }}</td>
+                    <td>{{ med.dose }}</td>
+                    <td>{{ med.log_date_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>No medication injections recorded.</p>
+        {% endif %}
+    </div>
+
+    <p style="text-align: center;"><a href="{{ url_for('index') }}">Back to Home</a></p>
+</body>
+</html>

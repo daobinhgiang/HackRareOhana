@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Medication Injection Tracker</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/style.css') }}">
+</head>
+<body>
+  <nav>
+    <a href="/home">Home</a>
+    <!-- Updated the nutrition link to use the 'nutrition' endpoint -->
+    <a href="/calorie">Calorie Intake</a>
+    <a href="/medication">Medication Tracker</a>
+    <a href="/profile">Profile</a>
+    <a href="/search">Search Users</a>
+    <a href="/logout">Logout</a>
+  
+  </nav>
+
+
+  <script>
+    // Automatically start the voice assistant on page load
+    document.addEventListener("DOMContentLoaded", function () {
+      fetch('/start_voice', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => console.log('Voice assistant status:', data.status))
+        .catch(error => console.error('Error starting voice assistant:', error));
+
+      // Poll for navigation commands every second
+      setInterval(checkNavigation, 3000);
+    });
+
+    function startVoice() {
+      fetch('/start_voice', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => console.log('Voice assistant status:', data.status))
+        .catch(error => console.error('Error starting voice assistant:', error));
+    }
+
+    function stopVoice() {
+      fetch('/stop_voice', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => console.log('Voice assistant status:', data.status))
+        .catch(error => console.error('Error stopping voice assistant:', error));
+    }
+
+    function checkNavigation() {
+  fetch('/check_navigation')
+    .then(response => response.json())
+    .then(data => {
+      if (data.command) {
+        // Convert command to lowercase for easier matching
+        let cmd = data.command.toLowerCase();
+        console.log('Navigation command received:', cmd);
+        
+        // If the command includes "cal, gallery", "cal gallery" or "calorie"
+        if (cmd.includes("cal, gallery") || cmd.includes("gallery") || cmd.includes("calorie") || (cmd.includes("cal") && cmd.includes("gal"))) {
+          window.location.href = "/calorie";
+        } else if (cmd.includes("profile")) {
+          window.location.href = '/profile';
+        } else if (cmd.includes("tool")) {
+          window.location.href = '/tool';
+        } else if (cmd.includes("map")) {
+          window.location.href = '/map';
+        } else if (cmd.includes("medication")) {
+            window.location.href = '/medication';
+        } else if (cmd.includes("search")) {
+            window.location.href = '/search';
+        } 
+        else {
+          console.log('Unrecognized command:', cmd);
+        }
+      }
+    })
+    .catch(error => console.error('Error checking navigation:', error));
+}
+  </script>
+  
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  
+  <div class="content">
+    <h1 class="page-title">Medication Injection Tracker</h1>
+
+    <!-- Form Container -->
+    <div class="form-container">
+      <form method="post" class="medication-form">
+        <div class="mb-3">
+          <label for="medication_name" class="form-label">Medication Name:</label>
+          <input type="text" id="medication_name" name="medication_name" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="injection_frequency" class="form-label">Injection Frequency:</label>
+          <select id="injection_frequency" name="injection_frequency" class="form-select" required>
+            <option value="daily">Daily</option>
+            <option value="twice a day">Twice a day</option>
+            <option value="three a day">Three a day</option>
+            <option value="two a week">Two a week</option>
+            <option value="three a week">Three a week</option>
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="injection_area" class="form-label">Injection Area:</label>
+          <select id="injection_area" name="injection_area" class="form-select" required>
+            <option value="upper arm">Upper Arm</option>
+            <option value="thigh">Thigh</option>
+            <option value="hip">Hip</option>
+            <option value="buttocks">Buttocks</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="dose" class="form-label">Dose:</label>
+          <input type="text" id="dose" name="dose" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">Add Medication Injection Record</button>
+      </form>
+    </div>
+
+    <p class="text-center mt-4">
+      <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">Back to Home</a>
+    </p>
+  </div>
+</div>
+</body>
+</html>

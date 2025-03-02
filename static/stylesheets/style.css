@@ -1,0 +1,502 @@
+/* General styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+nav {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+}
+
+nav a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: black;
+}
+
+.intro-section{
+    display: grid;
+    grid-template-columns: 1.5fr 3.5fr 3.5fr 0.5fr;
+    /* grid-template-rows: 2fr 1fr; */
+    width: 100%;
+    margin-top: 50px;   
+    padding-top: 60px;
+    padding-bottom: 60px;
+    background-color: #F8FAFC;
+}
+
+.intro{
+    grid-column-start: 2;
+    grid-template-rows: 2;
+}
+
+h1{
+    /* font-family: 'cardo'; */
+    font-weight: bold;
+    font-size: 3.5rem;
+}
+
+.avatar {
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically */
+    height: 100%; /* Ensure it takes up the available height */
+}
+
+#ava {
+    border-radius: 50%;
+    width: 300px;
+    height: 300px;
+    object-fit: cover; /* Prevents image distortion */
+    display: block;
+}
+
+
+/* Centering the form */
+#login-form {
+    background: white;
+    width: 350px;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Headings */
+#login-form h2 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Labels */
+#login-form label {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: left;
+    display: block;
+    margin-top: 10px;
+}
+
+/* Input fields */
+#login-form input {
+    width: 90%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Login button */
+#login-form button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 15px;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#login-form button:hover {
+    background-color: #45a049;
+}
+
+/* Error messages */
+.error {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+/* Register link */
+#login-form a {
+    display: block;
+    margin-top: 15px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #007BFF;
+    font-weight: bold;
+}
+
+#login-form a:hover {
+    text-decoration: underline;
+}
+
+
+/* Centering the signup form */
+#signup-form {
+    background: white;
+    width: 400px;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Headings */
+h2 {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+/* Labels */
+.signup-label {
+    font-size: 14px;
+    font-weight: bold;
+    text-align: left;
+    display: block;
+    margin-top: 10px;
+}
+
+/* Input fields */
+.signup-input {
+    width: 90%;
+    padding: 12px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: #f8f8f8;
+    border: 1px solid #ccc;
+}
+
+/* Checkbox and terms */
+.terms-container {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.terms-container input {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+}
+
+.terms-container a {
+    color: #000;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+/* Signup Button */
+#signup-button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#signup-button:hover {
+    background-color: #2d401d;
+}
+
+/* Register link */
+.signup-link {
+    display: block;
+    margin-top: 15px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+}
+
+.signup-link:hover {
+    text-decoration: underline;
+}
+
+/* Error messages */
+.error {
+    color: red;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+/* Main container */
+.container {
+    width: 100%;
+    max-width: 100%;
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    overflow-y: auto;
+    max-height: 90vh;
+
+}
+
+/* Navigation bar */
+.navbar {
+    background-color: #415D30;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.navbar a:hover {
+    text-decoration: underline;
+}
+
+/* Page title */
+.page-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Form styling */
+.form-container {
+    background: #f8f8f8;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+.calorie-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.form-input {
+    width: 90%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: #fff;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    background-color: #198754;
+    border: none;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #2d401d;
+}
+
+/* Results section */
+.result-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.calorie-result {
+    font-size: 16px;
+    color: #333;
+    background: #eaf7ea;
+    padding: 10px;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+
+/* Back to home link */
+.back-link {
+    margin-top: 20px;
+}
+
+.back-link a {
+    font-size: 14px;
+    text-decoration: none;
+    color: #007BFF;
+    font-weight: bold;
+}
+
+.back-link a:hover {
+    text-decoration: underline;
+}
+
+
+
+
+
+
+
+form {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+form label {
+    display: block;
+    margin-top: 10px;
+}
+
+form input,
+form select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    box-sizing: border-box;
+}
+
+.container {
+    text-align: center;
+}
+
+#toggle-edit {
+    margin: 20px auto;
+    display: block;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 16px;
+    color: #4CAF50;
+}
+
+#search-results {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#search-results ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+#search-results li {
+    padding: 5px;
+    cursor: pointer;
+}
+
+#search-results li:hover {
+    background-color: #f0f0f0;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+    gap: 15px;
+    background-color: #eee;
+    margin: 0;
+    padding: 10px;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #333;
+}
+
+
+/* Profile Section */
+.profile-container {
+    background: #f8f8f8;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+/* Input Fields */
+.form-control,
+.form-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Edit Button */
+#toggle-edit {
+    margin-top: 20px;
+    display: block;
+    cursor: pointer;
+    width: 100%;
+    background: #4CAF50;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+#toggle-edit:hover {
+    background-color: #2d401d;
+}
+
+/* Profile Summary */
+.profile-summary {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Back Link */
+.text-center a {
+    font-size: 14px;
+    text-decoration: none;
+    color: #007BFF;
+    font-weight: bold;
+}
+
+.text-center a:hover {
+    text-decoration: underline;
+}
+
+.content{
+    margin-top: 200px;
+}

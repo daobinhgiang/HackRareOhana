@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voice Assistant</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Include external script if needed -->
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/style.css') }}">
+</head>
+
+<body>
+  <nav>
+    <a href="/home">Home</a>
+    <!-- Updated the nutrition link to use the 'nutrition' endpoint -->
+    <a href="/calorie">Calorie Intake</a>
+    <a href="/medication">Medication Tracker</a>
+    <a href="/profile">Profile</a>
+    <a href="/search">Search Users</a>
+    <a href="/logout">Logout</a>
+  
+  </nav>
+
+
+  <script>
+    // Automatically start the voice assistant on page load
+    document.addEventListener("DOMContentLoaded", function () {
+      fetch('/start_voice', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => console.log('Voice assistant status:', data.status))
+        .catch(error => console.error('Error starting voice assistant:', error));
+
+      // Poll for navigation commands every second
+      setInterval(checkNavigation, 3000);
+    });
+
+    function startVoice() {
+      fetch('/start_voice', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => console.log('Voice assistant status:', data.status))
+        .catch(error => console.error('Error starting voice assistant:', error));
+    }
+
+    function stopVoice() {
+      fetch('/stop_voice', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => console.log('Voice assistant status:', data.status))
+        .catch(error => console.error('Error stopping voice assistant:', error));
+    }
+
+    function checkNavigation() {
+  fetch('/check_navigation')
+    .then(response => response.json())
+    .then(data => {
+      if (data.command) {
+        // Convert command to lowercase for easier matching
+        let cmd = data.command.toLowerCase();
+        console.log('Navigation command received:', cmd);
+        
+        // If the command includes "cal, gallery", "cal gallery" or "calorie"
+        if (cmd.includes("cal, gallery") || cmd.includes("gallery") || cmd.includes("calorie") || (cmd.includes("cal") && cmd.includes("gal"))) {
+          window.location.href = "/calorie";
+        } else if (cmd.includes("profile")) {
+          window.location.href = '/profile';
+        } else if (cmd.includes("tool")) {
+          window.location.href = '/tool';
+        } else if (cmd.includes("map")) {
+          window.location.href = '/map';
+        } else if (cmd.includes("medication")) {
+            window.location.href = '/medication';
+        } else if (cmd.includes("search")) {
+            window.location.href = '/search';
+        } 
+        else {
+          console.log('Unrecognized command:', cmd);
+        }
+      }
+    })
+    .catch(error => console.error('Error checking navigation:', error));
+}
+  </script>
+</body>
+
+</html>

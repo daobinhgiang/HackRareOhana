@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Food Log History</title>
+    <style>
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin: 20px auto;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        h1 {
+            text-align: center;
+        }
+        a {
+            display: block;
+            text-align: center;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Food Log History</h1>
+    {% if stored_food_logs %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Food Name</th>
+                    <th>Calories</th>
+                    <th>Quantity (grams)</th>
+                    <th>Nutrients</th>
+                    <th>Logged Time</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in stored_food_logs %}
+                <tr>
+                    <td>{{ log.food_name }}</td>
+                    <td>{{ log.calories }}</td>
+                    <td>{{ log.quantity }}</td>
+                    <td>{{ log.nutrients }}</td>
+                    <td>{{ log.log_date_time }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p style="text-align: center;">No food logs found.</p>
+    {% endif %}
+    <a href="{{ url_for('index') }}">Back to Home</a>
+</body>
+</html>

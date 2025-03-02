@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/style.css') }}">
+
+</head>
+<body>
+    <!-- (Optional) Navigation bar -->
+    <nav>
+        <a href="/home">Home</a>
+        <!-- Updated the nutrition link to use the 'nutrition' endpoint -->
+        <a href="/calorie">Calorie Intake</a>
+        <a href="/medication">Medication Tracker</a>
+        <a href="/profile">Profile</a>
+        <a href="/search">Search Users</a>
+        <a href="/logout">Logout</a>
+      
+      </nav>
+    
+    
+      <script>
+        // Automatically start the voice assistant on page load
+        document.addEventListener("DOMContentLoaded", function () {
+          fetch('/start_voice', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => console.log('Voice assistant status:', data.status))
+            .catch(error => console.error('Error starting voice assistant:', error));
+    
+          // Poll for navigation commands every second
+          setInterval(checkNavigation, 3000);
+        });
+    
+        function startVoice() {
+          fetch('/start_voice', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => console.log('Voice assistant status:', data.status))
+            .catch(error => console.error('Error starting voice assistant:', error));
+        }
+    
+        function stopVoice() {
+          fetch('/stop_voice', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => console.log('Voice assistant status:', data.status))
+            .catch(error => console.error('Error stopping voice assistant:', error));
+        }
+    
+        function checkNavigation() {
+      fetch('/check_navigation')
+        .then(response => response.json())
+        .then(data => {
+          if (data.command) {
+            // Convert command to lowercase for easier matching
+            let cmd = data.command.toLowerCase();
+            console.log('Navigation command received:', cmd);
+            
+            // If the command includes "cal, gallery", "cal gallery" or "calorie"
+            if (cmd.includes("cal, gallery") || cmd.includes("gallery") || cmd.includes("calorie") || (cmd.includes("cal") && cmd.includes("gal"))) {
+              window.location.href = "/calorie";
+            } else if (cmd.includes("profile")) {
+              window.location.href = '/profile';
+            } else if (cmd.includes("tool")) {
+              window.location.href = '/tool';
+            } else if (cmd.includes("map")) {
+              window.location.href = '/map';
+            } else if (cmd.includes("medication")) {
+                window.location.href = '/medication';
+            } else if (cmd.includes("search")) {
+                window.location.href = '/search';
+            } 
+            else {
+              console.log('Unrecognized command:', cmd);
+            }
+          }
+        })
+        .catch(error => console.error('Error checking navigation:', error));
+    }
+      </script>
+
+      <div class="container">
+
+        <div class="content">
+            <h1 class="page-title">Profile Page</h1>
+
+            <div class="profile-container">
+                <form id="profile-form" method="post" action="{{ url_for('profile') }}">
+                    <!-- Height -->
+                    <div class="mb-3">
+                        <label for="height" class="form-label">Height:</label>
+                        <input type="number" step="any" name="height" id="height" 
+                               value="{{ user.height_input if user.height_input is not none else '' }}" 
+                               class="form-control" disabled required>
+                        <select name="height_unit" id="height_unit" class="form-select" disabled>
+                            <option value="cm" {% if user.height_unit == 'cm' %}selected{% endif %}>Centimeters</option>
+                            <option value="ft" {% if user.height_unit == 'ft' %}selected{% endif %}>Feet</option>
+                        </select>
+                    </div>
+
+                    <!-- Weight -->
+                    <div class="mb-3">
+                        <label for="weight" class="form-label">Weight:</label>
+                        <input type="number" step="any" name="weight" id="weight" 
+                               value="{{ user.weight_input if user.weight_input is not none else '' }}" 
+                               class="form-control" disabled required>
+                        <select name="weight_unit" id="weight_unit" class="form-select" disabled>
+                            <option value="kg" {% if user.weight_unit == 'kg' %}selected{% endif %}>Kilograms</option>
+                            <option value="lb" {% if user.weight_unit == 'lb' %}selected{% endif %}>Pounds</option>
+                        </select>
+                    </div>
+
+                    <!-- Rare Disease Search -->
+                    <div class="mb-3">
+                        <label for="rare_disease_search" class="form-label">Rare Disease Search:</label>
+                        <input type="text" name="rare_disease_search" id="rare_disease_search"
+                               class="form-control" placeholder="Search rare disease..." disabled>
+                        <button type="button" id="search-disease-btn" class="btn btn-success mt-2" disabled>Search</button>
+                        <input type="text" name="rare_diseases" id="rare_diseases" class="form-control mt-2"
+                               value="{{ user.rare_diseases }}">
+                    </div>
+
+                    <!-- Date of Birth -->
+                    <div class="mb-3">
+                        <label for="dob" class="form-label">Date of Birth:</label>
+                        <input type="date" name="dob" id="dob" class="form-control"
+                               value="{{ user.dob.strftime('%Y-%m-%d') if user.dob else '' }}" disabled required>
+                    </div>
+
+                    <!-- Gender -->
+                    <div class="mb-3">
+                        <label for="gender" class="form-label">Gender:</label>
+                        <select name="gender" id="gender" class="form-select" disabled>
+                            <option value="">Select</option>
+                            <option value="Male" {% if user.gender == 'Male' %}selected{% endif %}>Male</option>
+                            <option value="Female" {% if user.gender == 'Female' %}selected{% endif %}>Female</option>
+                            <option value="Other" {% if user.gender == 'Other' %}selected{% endif %}>Other</option>
+                        </select>
+                    </div>
+
+                    <button id="toggle-edit" class="btn btn-primary w-100">Edit</button>
+                </form>
+            </div>
+
+            <!-- Displaying BMI and Age -->
+            <div class="profile-summary mt-4">
+                <p>Your BMI: <span id="bmi-display">{{ user.bmi if user.bmi is not none else 'N/A' }}</span></p>
+                <p>Your Age: <span id="age-display">{{ user.age if user.age is not none else 'N/A' }}</span></p>
+            </div>
+
+            <p class="text-center mt-4">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">Back to Home</a>
+            </p>
+        </div>
+    </div>
+    <!-- Section to display rare disease search results -->
+    <div id="search-results"></div>
+
+    <script>
+        $(document).ready(function () {
+            // Toggle Edit/Save functionality
+
+            // Rare Disease Search
+            $('#search-disease-btn').click(function () {
+                var query = $('#rare_disease_search').val();
+                if (!query) {
+                    alert("Please enter a search term");
+                    return;
+                }
+                $.ajax({
+                    url: "{{ url_for('search_disease') }}",
+                    type: "GET",
+                    data: { query: query },
+                    success: function (response) {
+                        console.log("Raw API response:", JSON.stringify(response, null, 2));
+
+                        // If your JSON path is actually "response.docs" (top-level),
+                        // then do: var docs = response.docs;
+                        // If it's nested under response.response.docs, then do the line below:
+                        // var docs = response.response && response.response.docs;
+                        
+                        // Adjust based on your actual JSON structure:
+                        var docs = response.response && response.response.docs; // <--- If your route returns { "docs": [ ... ] }
+
+                        var resultsHtml = "<h3>Search Results for \"" + query + "\"</h3>";
+                        if (response.error) {
+                            resultsHtml += "<p>Error: " + response.error + "</p>";
+                        } else if (docs && docs.length > 0) {
+                            
+                            var theTitle = docs[0].title;
+                            resultsHtml += "<p>" + theTitle + "</p>";
+                            $('#rare_diseases').val(theTitle); 
+                        } else {
+                            resultsHtml += "<p>No results found.</p>";
+                        }
+                        $('#search-results').html(resultsHtml);
+                    },
+                    error: function () {
+                        $('#search-results').html("<p>Error performing search.</p>");
+                    }
+                });
+            });
+        });
+
+        // Called when user clicks on a search result <li>
+        function pickDisease(diseaseTitle) {
+            // Put that disease in the hidden field
+            $('#rare_diseases').val(diseaseTitle);
+            console.log("pickDisease called with:", diseaseTitle);
+            alert("Set Rare Disease to: " + diseaseTitle);
+        }
+    </script>
+</body>
+</html>

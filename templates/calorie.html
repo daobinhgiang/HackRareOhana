@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Calorie Intake Tracker</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/style.css') }}">
+</head>
+<body>
+  <nav>
+    <a href="/home">Home</a>
+    <!-- Updated the nutrition link to use the 'nutrition' endpoint -->
+    <a href="/calorie">Calorie Intake</a>
+    <a href="/medication">Medication Tracker</a>
+    <a href="/profile">Profile</a>
+    <a href="/search">Search Users</a>
+    <a href="/logout">Logout</a>
+  
+  </nav>
+
+
+  <script>
+    // Automatically start the voice assistant on page load
+    document.addEventListener("DOMContentLoaded", function () {
+      fetch('/start_voice', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => console.log('Voice assistant status:', data.status))
+        .catch(error => console.error('Error starting voice assistant:', error));
+
+      // Poll for navigation commands every second
+      setInterval(checkNavigation, 3000);
+    });
+
+    function startVoice() {
+      fetch('/start_voice', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => console.log('Voice assistant status:', data.status))
+        .catch(error => console.error('Error starting voice assistant:', error));
+    }
+
+    function stopVoice() {
+      fetch('/stop_voice', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => console.log('Voice assistant status:', data.status))
+        .catch(error => console.error('Error stopping voice assistant:', error));
+    }
+
+    function checkNavigation() {
+  fetch('/check_navigation')
+    .then(response => response.json())
+    .then(data => {
+      if (data.command) {
+        // Convert command to lowercase for easier matching
+        let cmd = data.command.toLowerCase();
+        console.log('Navigation command received:', cmd);
+        
+        // If the command includes "cal, gallery", "cal gallery" or "calorie"
+        if (cmd.includes("cal, gallery") || cmd.includes("gallery") || cmd.includes("calorie") || (cmd.includes("cal") && cmd.includes("gal"))) {
+          window.location.href = "/calorie";
+        } else if (cmd.includes("profile")) {
+          window.location.href = '/profile';
+        } else if (cmd.includes("tool")) {
+          window.location.href = '/tool';
+        } else if (cmd.includes("map")) {
+          window.location.href = '/map';
+        } else if (cmd.includes("medication")) {
+            window.location.href = '/medication';
+        } else if (cmd.includes("search")) {
+            window.location.href = '/search';
+        } 
+        else {
+          console.log('Unrecognized command:', cmd);
+        }
+      }
+    })
+    .catch(error => console.error('Error checking navigation:', error));
+}
+  </script>
+  <div class="content">
+    <h1 class="page-title">Calorie Intake Tracker</h1>
+
+    <!-- Form for food input -->
+    <div class="form-container">
+      <form id="nutritionForm" method="post" class="calorie-form">
+        <label for="query" class="form-label">Enter what you ate:</label>
+        <input type="text" id="query" name="query" class="form-input" placeholder="Food..." onfocus="startVoiceInput()">
+        <input type="submit" value="Check Calories" class="submit-btn">
+      </form>
+    </div>
+
+    <!-- Calorie Results -->
+    {% if calorie_result is not none %}
+      <h2 class="result-title">Calorie Intake:</h2>
+      <p class="calorie-result">{{ calorie_result }} calories</p>
+  {% elif error %}
+    <p style="color: red;">{{ error }}</p>
+  {% endif %}
+  
+  <p class="back-link"><a href="{{ url_for('index') }}">Back to Home</a></p>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script>
+    function startVoiceInput() {
+      // Start the voice assistant if not already running
+      fetch('/start_voice', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Voice assistant status:', data.status);
+          // Poll for voice input every 2 seconds
+          var intervalId = setInterval(() => {
+            fetch('/check_navigation')
+              .then(response => response.json())
+              .then(data => {
+                if (data.command) {
+                  console.log('Voice input received:', data.command);
+                  // Place the recognized text into the input field
+                  document.getElementById('query').value = data.command;
+                  clearInterval(intervalId);
+                }
+              })
+              .catch(error => console.error('Error checking navigation:', error));
+          }, 2000);
+        })
+        .catch(error => console.error('Error starting voice assistant:', error));
+    }
+  </script>
+</body>
+</html>

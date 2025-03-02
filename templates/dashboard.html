@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <style>
+        /* Styling */
+        .user-info {
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 20px;
+            width: 300px;
+            text-align: center;
+        }
+        .chart-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 20px;
+        }
+        .full-width-chart {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .chart-block {
+            flex: 1;
+            min-width: 400px;
+            text-align: center;
+        }
+        img {
+            max-width: 400px;
+            height: auto;
+            border: 1px solid #ccc;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/home">Home</a>
+        <a href="/calorie">Calorie Intake</a>
+        <a href="/medication">Medication Tracker</a>
+        <a href="/profile">Profile</a>
+        <a href="/search">Search Users</a>
+        <a href="/logout">Logout</a>
+    </nav>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        // Automatically start the voice assistant on page load
+        document.addEventListener("DOMContentLoaded", function () {
+          fetch('/start_voice', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => console.log('Voice assistant status:', data.status))
+            .catch(error => console.error('Error starting voice assistant:', error));
+    
+          // Poll for navigation commands every second
+          setInterval(checkNavigation, 3000);
+        });
+    
+        function startVoice() {
+          fetch('/start_voice', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => console.log('Voice assistant status:', data.status))
+            .catch(error => console.error('Error starting voice assistant:', error));
+        }
+    
+        function stopVoice() {
+          fetch('/stop_voice', { method: 'POST' })
+            .then(response => response.json())
+            .then(data => console.log('Voice assistant status:', data.status))
+            .catch(error => console.error('Error stopping voice assistant:', error));
+        }
+    
+        function checkNavigation() {
+      fetch('/check_navigation')
+        .then(response => response.json())
+        .then(data => {
+          if (data.command) {
+            let cmd = data.command.toLowerCase();  // Convert to lowercase
+            console.log('Navigation command received:', cmd);
+    
+            // Extract the query after the word "input"
+            if (cmd.includes("input")) {
+              let queryIndex = cmd.indexOf("input") + 5; // 5 is the length of "input "
+              let queryText = cmd.substring(queryIndex).trim(); // Extract text after "input"
+              
+              // Set the query in the input field
+              document.getElementById('query').value = queryText;
+              console.log("Extracted Query:", queryText);
+            }
+            
+            // Existing voice navigation
+            if (cmd.includes("cal, gallery") || cmd.includes("gallery") || cmd.includes("calorie") || (cmd.includes("cal") && cmd.includes("gal"))) {
+              window.location.href = "{{ url_for('calorie') }}";
+            } else if (cmd.includes("profile")) {
+              window.location.href = "{{ url_for('profile') }}";
+            } else if (cmd.includes("medication")) {
+                window.location.href = "{{ url_for('medication') }}";
+            } else if (cmd.includes("search")) {
+                window.location.href = "{{ url_for('search') }}";
+            } else if (cmd.includes("dashboard")) {
+                window.location.href = "{{ url_for('dashboard') }}";
+            } 
+            else {
+              console.log('Unrecognized command:', cmd);
+            }
+          }
+        })
+        .catch(error => console.error('Error checking navigation:', error));
+    }
+    
+      </script>
+    <h1>Dashboard</h1>
+
+    <!-- Calories Intake Chart at the Top Centered -->
+    <div class="full-width-chart">
+        <h2>Calories Intake Over Time</h2>
+        {% if calorie_chart %}
+            <img src="data:image/png;base64,{{ calorie_chart }}" alt="Calories Intake Chart">
+        {% else %}
+            <p>No calorie intake data available.</p>
+        {% endif %}
+    </div>
+
+    <!-- Male Charts -->
+    <div class="chart-container">
+        <div class="chart-block">
+            <h2>Male Height</h2>
+            <img src="data:image/png;base64,{{ male_height_plot }}" alt="Male Height Chart">
+        </div>
+
+        <div class="chart-block">
+            <h2>Male Weight</h2>
+            <img src="data:image/png;base64,{{ male_weight_plot }}" alt="Male Weight Chart">
+        </div>
+
+        <div class="chart-block">
+            <h2>Male BMI</h2>
+            <img src="data:image/png;base64,{{ male_bmi_plot }}" alt="Male BMI Chart">
+        </div>
+    </div>
+
+    <!-- Female Charts in One Row -->
+    <div class="chart-container">
+        <div class="chart-block">
+            <h2>Female Height</h2>
+            <img src="data:image/png;base64,{{ female_height_plot }}" alt="Female Height Chart">
+        </div>
+
+        <div class="chart-block">
+            <h2>Female Weight</h2>
+            <img src="data:image/png;base64,{{ female_weight_plot }}" alt="Female Weight Chart">
+        </div>
+
+        <div class="chart-block">
+            <h2>Female BMI</h2>
+            <img src="data:image/png;base64,{{ female_bmi_plot }}" alt="Female BMI Chart">
+        </div>
+    </div>
+
+    <p style="text-align: center;"><a href="{{ url_for('index') }}">Back to Main</a></p>
+</body>
+</html>
